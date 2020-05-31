@@ -1,1 +1,5 @@
 temp**
+*.DS_Store
+objectdb
+config.py
+*.py[co]
