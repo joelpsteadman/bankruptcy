@@ -2,6 +2,27 @@
 
 run 'python3 data_analyzer.py' from this directory for the results below
 run 'python3 data_collector.py' to gather PUMA / county etc data (incomplete)
+- Data is collected to puma-output.csv
+
+## How-To
+
+### Set up more years
+
+* Always name files starting with their year
+
+#### County Bankruptcy Data
+
+- Data for bankruptcies by county and year can be found here: https://www.uscourts.gov/report-name/bankruptcy-filings?tn=&pt=All&t=534&m%5Bvalue%5D%5Bmonth%5D=&y%5Bvalue%5D%5Byear%5D=2018
+    - Select bankruptcy from the topic drop-down menu and the year that you want
+    - Look for the link for "U.S. Bankruptcy Courts - Business and Nonbusiness Cases Filed, by Chapter of the Bankruptcy Code, District, and County”
+    - The PDF will give you a pretty view, but you need the csv file
+    - Click on the link then download the CSV
+    - Edit the CSV thus:
+        - Copy the counties column to column A
+        - Copy the total non business bankruptcies column to column B
+        - Copy the county code column into column C
+        - Delete all other data
+        - Remove the top few columns so there is only one blank row at the top
 
 ## findings
 

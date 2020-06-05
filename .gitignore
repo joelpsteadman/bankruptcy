@@ -3,3 +3,6 @@ temp**
 objectdb
 config.py
 *.py[co]
+/.idea
+/.vscode
+files/
