@@ -8,23 +8,22 @@ def get_county_data(filepath, year):
 
     with open(filepath) as csvfile:
         file_reader = csv.reader(csvfile)
-        next(file_reader) # skip the first row
+        row = []
+        while not row: # skip blank rows at the beginning
+            row = next(file_reader)
 
         try:
             while True:
-
-                state_row = next(file_reader)
-                
-                if state_row[0].isspace() or state_row[0]: # row is empty
-                    if state_row[0][0].isnumeric(): # line specifying which court district e.g. 1st
+                if row[0].isspace() or row[0]: # row is empty
+                    if row[0][0].isnumeric(): # line specifying which court district e.g. 1st
                         next(file_reader)
                     else:
-                        state = state_row[0][0:2]
+                        state = row[0][0:2]
                         next(file_reader)
 
                         county_row = next(file_reader)
                         while county_row[0]:
-                            code = county_row[2]
+                            code = county_row[1]
                             bankruptcies = 0
                             try:
                                 bankruptcies = int(county_row[1].replace(',', ''))
@@ -42,6 +41,7 @@ def get_county_data(filepath, year):
                                 dictionary_of_counties[code] = county
 
                             county_row = next(file_reader)
+                row = next(file_reader)
         except StopIteration:
             pass
 

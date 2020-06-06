@@ -18,11 +18,12 @@ run 'python3 data_collector.py' to gather PUMA / county etc data (incomplete)
     - The PDF will give you a pretty view, but you need the csv file
     - Click on the link then download the CSV
     - Edit the CSV thus:
-        - Copy the counties column to column A
-        - Copy the total non business bankruptcies column to column B
-        - Copy the county code column into column C
+        - Copy the Circ/Dist and County column to column A
+        - Copy the county code column into column B
+        - Copy the total non business bankruptcies column to column C
         - Delete all other data
-        - Remove the top few columns so there is only one blank row at the top
+        - Unmerge all cells
+        - Remove data from the top few columns (can accept any number of leading blank rows)
 
 ## findings
 

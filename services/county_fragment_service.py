@@ -18,7 +18,7 @@ def get_cf_data(filepath):
             STATE_CODE = line.index('state')
             STATE = line.index('stab')
             COUNTY_NAME = line.index('cntyname')
-            POPULATION = line.index('pop14')
+            POPULATION = line.index('pop10')
             WEIGHT = line.index('afact')
 
         next(file_reader) # skip extra header line

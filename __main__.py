@@ -26,6 +26,9 @@ year = '0000'
 current_path = os.getcwd()
 logging.debug("current_path: %s", current_path)
 
+if 'bankruptcy' not in current_path:
+    current_path = current_path + '/bankruptcy'
+
 # Collect household ACS data
 household_ACS_directory = os.path.join(current_path, 'files/Household_ACS')
 logging.debug("household_ACS_directory: %s", household_ACS_directory)
