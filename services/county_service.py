@@ -26,7 +26,7 @@ def get_county_data(filepath, year):
                             code = county_row[1]
                             bankruptcies = 0
                             try:
-                                bankruptcies = int(county_row[1].replace(',', ''))
+                                bankruptcies = int(county_row[2].replace(',', ''))
                             except:
                                 pass
                             if code in dictionary_of_counties:

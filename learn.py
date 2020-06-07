@@ -1,23 +1,34 @@
 import numpy
+import pandas
 from sklearn.metrics import r2_score
-numpy.random.seed(2)
+from sklearn import linear_model
 
-def learn(training_inputs, training_outputs, test_inputs, test_outputs):
+# def learn(training_inputs, training_outputs, test_inputs, test_outputs):
+df = pandas.read_csv("./files/puma-output.csv")
 
+X = df[['Divorce', 'Age', 'Education', 'Insurance']]
+y = df['Bankruptcy']
 
-x = numpy.random.normal(3, 1, 100)
-y = numpy.random.normal(150, 40, 100) / x
+regr = linear_model.LinearRegression()
+regr.fit(X, y)
 
-train_x = x[:80]
-train_y = y[:80]
+predicted_bankruptcy = regr.predict([[0.23, 0.3, 0.62, 0.47]])
 
-test_x = x[80:]
-test_y = y[80:]
+print(predicted_bankruptcy)
 
-mymodel = numpy.poly1d(numpy.polyfit(train_x, train_y, 4))
+# x = numpy.random.normal(3, 1, 100)
+# y = numpy.random.normal(150, 40, 100) / x
 
-r2 = r2_score(test_y, mymodel(test_x))
+# train_x = x[:80]
+# train_y = y[:80]
 
-print(r2)
+# test_x = x[80:]
+# test_y = y[80:]
 
-print(mymodel(5))
+# mymodel = numpy.poly1d(numpy.polyfit(train_x, train_y, 2))
+
+# r2 = r2_score(test_y, mymodel(test_x))
+
+# print(r2)
+
+# print(mymodel(5))

@@ -85,7 +85,11 @@ class PUMA:
         if total_population == 0.0:
             return 'NA'
         else:
-            return num_bankrupt / total_population
+            res = num_bankrupt / total_population
+            if res >= 1:
+                return res
+            else:
+                return num_bankrupt / total_population
 
     def get_insured_rate(self):
         num_insured = 0

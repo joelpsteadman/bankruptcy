@@ -1,8 +1,9 @@
 # bankruptcy
 
-run 'python3 data_analyzer.py' from this directory for the results below
-run 'python3 data_collector.py' to gather PUMA / county etc data (incomplete)
+run 'python data_analyzer.py' from this directory for the results below
+run 'python data_collector.py' to gather PUMA / county etc data (incomplete)
 - Data is collected to puma-output.csv
+run 'python learn.py' to test a prediction based on puma-output.csv
 
 ## How-To
 

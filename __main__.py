@@ -127,7 +127,9 @@ for puma_key in dict_of_PUMAs:
     # if not puma.has_household:
     #     logging.warning('PUMA with id: %s does not have any households', puma.id)
 
-columns = ['PUMA-ID', 'Bankruptcy_Rate', 'Median_Age', 'Divorce_Rate', 'In_The_Red_Rate', 'Insured_Rate', '35_to_54', '40_to_44', 'High_School_Grad', 'HS_or_some_college', 'Num_People', 'Num_Households']  
+# columns = ['PUMA-ID', 'Bankruptcy_Rate', 'Median_Age', 'Divorce_Rate', 'In_The_Red_Rate', 'Insured_Rate', '35_to_54', '40_to_44', 'High_School_Grad', 'HS_or_some_college', 'Num_People', 'Num_Households']  
+
+columns = ['Divorce', 'Age', 'Education', 'Insurance', 'Bankruptcy']
 # name of output file  
 filename = "./files/puma-output.csv"
 # writing to csv file  
@@ -148,7 +150,8 @@ with open(filename, 'w') as csvfile:
         except:
             pass
         
-        row = [puma_key, puma.get_bankruptcy_rate(), puma.get_median_age(), puma.get_divorced_rate(), puma.get_in_the_red_rate(), puma.get_insured_rate(), puma.get_portion_35_to_54(), puma.get_portion_40_to_44(), puma.get_highschool_graduation_rate(), puma.get_portion_hs_or_some_college(), people, households]
+        # row = [puma_key, puma.get_bankruptcy_rate(), puma.get_median_age(), puma.get_divorced_rate(), puma.get_in_the_red_rate(), puma.get_insured_rate(), puma.get_portion_35_to_54(), puma.get_portion_40_to_44(), puma.get_highschool_graduation_rate(), puma.get_portion_hs_or_some_college(), people, households]
+        row = [puma.get_divorced_rate(), puma.get_portion_35_to_54(), puma.get_portion_hs_or_some_college(), puma.get_insured_rate(), puma.get_bankruptcy_rate()]
         csvwriter.writerow(row) 
         
 logging.info("COMPLETE")
