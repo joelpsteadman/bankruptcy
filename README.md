@@ -1,7 +1,7 @@
 # bankruptcy
 
-run 'python data_analyzer.py' from this directory for the results below
-run 'python data_collector.py' to gather PUMA / county etc data (incomplete)
+run 'python data_analyzer.py' from this directory for the results below (this almost certainly does not work anymore)
+run 'python __main__.py' or 'python ../bankruptcy' from /bankruptcy to gather PUMA / county etc data (for all years that you provide in the files section)
 - Data is collected to puma-output.csv
 run 'python learn.py' to test a prediction based on puma-output.csv
 
@@ -28,6 +28,8 @@ run 'python learn.py' to test a prediction based on puma-output.csv
 
 ## findings
 
+(this section is old and needs updated)
+
 * Average people per household: 1.840791949603207
 * Average Family Income Per Year: 35803.37950994028
 * Average Household Income Per Year: 46201.31373230794
@@ -37,7 +39,6 @@ Entries with household income:  38038 / 48892
 Average People Per Household:  1.840791949603207
 Average Family Income Per Year:  $143565.88
 Average Household Income Per Year:  $118769.37
-
 
 Households below $0 budget:  2269
 Entries with family income:  24386 / 48892
@@ -57,24 +58,34 @@ Average # of variables provided:  3.32140227440072
 
 ## Results
 
-Taking into account (in order of predictive power) divorce(1), age(2), education(3), and insurance(4), with 2010 census data mixed with 2018 puma data and 2014 bankruptcy data, my model is able to predict bankrupcty rate of a PUMA on average to within .7 standard deviations (compared to .711 when predicting with just the mean), to within 95.3 people on average per 100,000 (vs 95.7), is 59% off from the true value on average (vs 60%), and out predicts the mean 50.5% of the time (R^2 - 0.022)
-R^2:  0.022008745560812337
-Mean error:  0.711865662994597
-Prediction error:  [0.70899647]
+Taking into account (in order of predictive power) divorce(1), age(2), health insurance(3), and education(4), with 2013 - 2018 census, ACS, and bankruptcy data, my model is able to predict bankrupcty rate of a PUMA on average to within 111 people on average per 100,000 (vs 115 when predicting with the mean), is 33% off from the true value on average (vs 34%), and out predicts the mean 55.5% of the time (R^2: 0.043)
+
 1) Percent of a PUMA'S population that is currently divorced (rather than single, widowed, etc)
     - min: 3%
-    - max: 22%
-    - Higher divorce rate is correlated with higher bankruptcy (R^2 - .03)
+    - max: 23%
+    - Higher divorce rate is correlated with higher bankruptcy (R^2 - .030)
 2) Percent of a PUMA's population that is between the ages of 35 and 54
-    - min: 6%
-    - max: 30%
-    - This rate is correlated with higher bankruptcy (R^2 - .035)
-3) Percent of a PUMA's population that has just a high school degree of some college
-    - min: 13%
-    - max: 61%
-    - This rate is correlated with higher bankruptcy (R^2 - .021)
-4) Percent of a PUMA's population that has health insurance
-    - min: 46%
+    - min: 5%
+    - max: 34%
+    - This rate is correlated with higher bankruptcy (R^2 - .023)
+3) Percent of a PUMA's population that has health insurance
+    - min: 45%
     - max: 99%
-    - This rate is inversely related with higher bankruptcy (R^2 - .001)
-    
+    - This rate is inversely related with higher bankruptcy (R^2 - .015)
+4) Percent of a PUMA's population that has just a high school degree of some college
+    - min: 12%
+    - max: 64%
+    - This rate is correlated with higher bankruptcy (R^2 - .010)
+
+len(df)  14103 ; len(training_set):  11282 ; len(testing_set): 2821
+R^2:  0.04275453607429536
+Mean error:  114.61877787853518
+Prediction error:  [111.24480827]
+Prediction error %:  0.32739957667083
+mean error %:  0.33532343964654443
+Prediction beats mean  0.5558312655086849 % of the time
+median error:  110.07931018951957
+Prediction error:  [111.24480827]
+Prediction error %:  0.32739957667083
+median error %:  0.32493936932453793
+Prediction beats median  0.4551577454803261 % of the time
