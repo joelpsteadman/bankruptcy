@@ -249,7 +249,13 @@ with open(filename, 'w') as csvfile:
             
             # row = [puma_key, puma.get_bankruptcy_rate(), puma.get_median_age(), puma.get_divorced_rate(), puma.get_in_the_red_rate(), puma.get_insured_rate(), puma.get_portion_35_to_54(), puma.get_portion_40_to_44(), puma.get_highschool_graduation_rate(), puma.get_portion_hs_or_some_college(), people, households]
             row = [puma.get_divorced_rate(), puma.get_portion_35_to_54(), puma.get_portion_hs_or_some_college(), puma.get_insured_rate(), puma.get_bankruptcy_rate()]
-            csvwriter.writerow(row) 
+            if puma.get_bankruptcy_rate() != 'NA':
+                csvwriter.writerow(row)
+            else:
+                with open(issue_log, 'a') as file:
+                    s = 'Bankruptcy is NA for puma with id: ' + puma.id + '\n'
+                    file.write(s)
+
         
 logging.info("COMPLETE")
 logging.info("COMPLETE")
