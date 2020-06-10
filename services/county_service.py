@@ -19,9 +19,12 @@ def get_county_data(filepath, year):
                         next(file_reader)
                     else:
                         state = row[0][0:2]
-                        next(file_reader)
-
-                        county_row = next(file_reader)
+                        row_after_state_row = next(file_reader)
+                        county_row = []
+                        if row_after_state_row:
+                            county_row = next(file_reader)
+                        else: 
+                            county_row = row_after_state_row
                         while county_row[0]:
                             code = county_row[1][0:5] + year
                             bankruptcies = 0
