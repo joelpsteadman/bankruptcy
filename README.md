@@ -1,9 +1,9 @@
 # bankruptcy
 
-run 'python data_analyzer.py' from this directory for the results below (this almost certainly does not work anymore)
-run 'python __main__.py' or 'python ../bankruptcy' from /bankruptcy to gather PUMA / county etc data (for all years that you provide in the files section)
+* run 'python data_analyzer.py' from this directory for the results below (this almost certainly does not work anymore)
+* run 'python __main__.py' or 'python ../bankruptcy' from /bankruptcy to gather PUMA / county etc data (for all years that you provide in the files section)
 - Data is collected to puma-output.csv
-run 'python learn.py' to test a prediction based on puma-output.csv
+* run 'python learn.py' to test a prediction based on puma-output.csv
 
 ## How-To
 
