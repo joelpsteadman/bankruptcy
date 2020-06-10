@@ -55,9 +55,12 @@ print("R^2: ", r2)
 
 # measure accuracy in average # of standard deviations from the mean
 
+
+
+
+# COMPARE TO MEAN ################################################################################
+
 testing_y = testing_y.values.tolist()
-stddev = statistics.stdev(testing_y)
-mean = statistics.mean(testing_y)
 
 # calculate how far (in stddev's) the mean is from the truth on average
 stddev = statistics.stdev(testing_y)
@@ -93,18 +96,19 @@ with open(filename, 'w') as csvfile:
         csvwriter.writerow(row)
         i += 1
 
-
-
 # what % off am I on average?
 total_error = 0.0
 i = 0
 for y in testing_y:
     prediction = predicted_bankruptcies[i][0]
-    if prediction > y:
-        error = (prediction / y) - 1
+    if prediction < y:
+        if not y: # y is 0.0
+            error = 1 - (prediction / 0.0001)
+        else:
+            error = 1 - (prediction / y)
         total_error += error
     else:
-        error = (y / prediction) - 1
+        error = 1 - (y / prediction)
         total_error += error
     i += 1
 average_mean_error = total_error / len(testing_y)
@@ -113,11 +117,14 @@ print('Prediction error %: ', average_mean_error)
 total_error = 0.0
 i = 0
 for y in testing_y:
-    if mean > y:
-        error = (mean / y) - 1
+    if mean < y:
+        if not y: # y is 0.0
+            error = 1 - (mean / 0.0001)
+        else:
+            error = 1 - (mean / y)
         total_error += error
     else:
-        error = (y / mean) - 1
+        error = 1 - (y / mean)
         total_error += error
     i += 1
 average_mean_error = total_error / len(testing_y)
@@ -134,3 +141,87 @@ for y in testing_y:
     i += 1
 percent_wins = float(total_wins) / len(testing_y)
 print('Prediction beats mean ', percent_wins, '% of the time')
+
+# COMPARE TO MEDIAN ################################################################################
+
+median = statistics.median(testing_y)
+
+# calculate how far (in stddev's) the median is from the truth on average
+stddev = statistics.stdev(testing_y)
+median = statistics.median(testing_y)
+total_error = 0.0
+for y in testing_y:
+    error = abs(median - y)
+    total_error += error
+average_median_error = total_error * 100000/ len(testing_y)
+print('median error: ', average_median_error)
+
+# calculate how far (in stddev's) the prediction is from the truth on average
+total_error = 0.0
+i = 0
+for y in testing_y:
+    error = abs(predicted_bankruptcies[i] - y)
+    total_error += error
+    i += 1
+average_median_error = total_error * 100000 / len(testing_y)
+print('Prediction error: ', average_median_error)
+
+columns = ['Prediction', 'Actual', 'median']
+# name of output file  
+filename = "./files/learn-output.csv"
+# writing to csv file  
+with open(filename, 'w') as csvfile:  
+    # creating a csv writer object  
+    csvwriter = csv.writer(csvfile)
+    csvwriter.writerow(columns)
+    i = 0
+    for y in testing_y:
+        row = [predicted_bankruptcies[i][0] * 100000, testing_y[i] * 100000, median * 100000]
+        csvwriter.writerow(row)
+        i += 1
+
+# what % off am I on average?
+total_error = 0.0
+i = 0
+for y in testing_y:
+    prediction = predicted_bankruptcies[i][0]
+    if prediction < y:
+        if not y: # y is 0.0
+            error = 1 - (prediction / 0.0001)
+        else:
+            error = 1 - (prediction / y)
+        total_error += error
+    else:
+        error = 1 - (y / prediction)
+        total_error += error
+    i += 1
+average_median_error = total_error / len(testing_y)
+print('Prediction error %: ', average_median_error)
+
+total_error = 0.0
+i = 0
+for y in testing_y:
+    if median < y:
+        if not y: # y is 0.0
+            error = 1 - (median / 0.0001)
+        else:
+            error = 1 - (median / y)
+        total_error += error
+    else:
+        error = 1 - (y / median)
+        total_error += error
+    i += 1
+average_median_error = total_error / len(testing_y)
+print('median error %: ', average_median_error)
+
+# guesses more accurately than the median x % of the time
+total_wins = 0
+i = 0
+for y in testing_y:
+    median_error = abs(median - y)
+    pred_error = abs(predicted_bankruptcies[i][0] - y)
+    if pred_error < median_error:
+        total_wins += 1
+    i += 1
+percent_wins = float(total_wins) / len(testing_y)
+print('Prediction beats median ', percent_wins, '% of the time')
