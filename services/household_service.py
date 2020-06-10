@@ -51,12 +51,16 @@ def get_acs_household_data(filepath, year):
 
         # logging.info("ID:\t\tExpenses:\t\tIncome:\t\t_budget:")
         try:
+            i = 0
             while True:
-            # while i < 10:
+                i += 1
                 acs_row = next(file_reader)
                 household = Household(acs_row, indices)
+                household.set_year(year)
                 id = str(acs_row[indices['id']]) + str(acs_row[indices['state']]) + year
                 dictionary_of_households[id] = household
+                b = "H." + str(i)
+                print (b, end="\r")
         except StopIteration:
             pass
         

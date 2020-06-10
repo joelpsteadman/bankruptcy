@@ -1,20 +1,37 @@
 import numpy
 import pandas
+import statistics, csv
 from sklearn.metrics import r2_score
 from sklearn import linear_model
+from sklearn.model_selection import train_test_split
+
+def partition(data_set, training_set_portion): 
+    data_set.shuffle()
+    size_of_training_set = round(len(data_set) / float(1 - training_set_portion))
+    training_set = data_set[:size_of_training_set]
+    test_set = data_set[size_of_training_set:]
+    return {'train': training_set, 'test': test_set}
 
 # def learn(training_inputs, training_outputs, test_inputs, test_outputs):
 df = pandas.read_csv("./files/puma-output.csv")
+training_set, testing_set = train_test_split(df, test_size=0.2, random_state=42, shuffle=True)
 
-X = df[['Divorce', 'Age', 'Education', 'Insurance']]
-y = df['Bankruptcy']
+training_X = training_set[['Divorce', 'Age', 'Education', 'Insurance']]
+training_y = training_set['Bankruptcy']
+testing_X = testing_set[['Divorce', 'Age', 'Education', 'Insurance']]
+testing_y = testing_set['Bankruptcy']
 
+print("len(df) ", len(df), "; len(training_set): ", len(training_set), "; len(testing_set):", len(testing_set))
+# print("Training inputs: ", train_inputs['train'], "Testing inputs ", test_inputs['test'])
 regr = linear_model.LinearRegression()
-regr.fit(X, y)
+regr.fit(training_X, training_y)
 
-predicted_bankruptcy = regr.predict([[0.23, 0.3, 0.62, 0.47]])
+testing_X = testing_X.values.tolist()
+predicted_bankruptcies = []
+for puma in testing_X:
+    predicted_bankruptcies.append(regr.predict([[puma[0], puma[1], puma[2], puma[3]]]))
 
-print(predicted_bankruptcy)
+# print(predicted_bankruptcies)
 
 # x = numpy.random.normal(3, 1, 100)
 # y = numpy.random.normal(150, 40, 100) / x
@@ -28,7 +45,92 @@ print(predicted_bankruptcy)
 # mymodel = numpy.poly1d(numpy.polyfit(train_x, train_y, 2))
 
 # r2 = r2_score(test_y, mymodel(test_x))
+r2 = r2_score(testing_y, predicted_bankruptcies)
 
-# print(r2)
+print("R^2: ", r2)
 
 # print(mymodel(5))
+
+# r2_score(y_true, y_pred)
+
+# measure accuracy in average # of standard deviations from the mean
+
+testing_y = testing_y.values.tolist()
+stddev = statistics.stdev(testing_y)
+mean = statistics.mean(testing_y)
+
+# calculate how far (in stddev's) the mean is from the truth on average
+stddev = statistics.stdev(testing_y)
+mean = statistics.mean(testing_y)
+total_error = 0.0
+for y in testing_y:
+    error = abs(mean - y)
+    total_error += error
+average_mean_error = total_error * 100000/ len(testing_y)
+print('Mean error: ', average_mean_error)
+
+# calculate how far (in stddev's) the prediction is from the truth on average
+total_error = 0.0
+i = 0
+for y in testing_y:
+    error = abs(predicted_bankruptcies[i] - y)
+    total_error += error
+    i += 1
+average_mean_error = total_error * 100000 / len(testing_y)
+print('Prediction error: ', average_mean_error)
+
+columns = ['Prediction', 'Actual', 'Mean']
+# name of output file  
+filename = "./files/learn-output.csv"
+# writing to csv file  
+with open(filename, 'w') as csvfile:  
+    # creating a csv writer object  
+    csvwriter = csv.writer(csvfile)
+    csvwriter.writerow(columns)
+    i = 0
+    for y in testing_y:
+        row = [predicted_bankruptcies[i][0] * 100000, testing_y[i] * 100000, mean * 100000]
+        csvwriter.writerow(row)
+        i += 1
+
+
+
+# what % off am I on average?
+total_error = 0.0
+i = 0
+for y in testing_y:
+    prediction = predicted_bankruptcies[i][0]
+    if prediction > y:
+        error = (prediction / y) - 1
+        total_error += error
+    else:
+        error = (y / prediction) - 1
+        total_error += error
+    i += 1
+average_mean_error = total_error / len(testing_y)
+print('Prediction error %: ', average_mean_error)
+
+total_error = 0.0
+i = 0
+for y in testing_y:
+    if mean > y:
+        error = (mean / y) - 1
+        total_error += error
+    else:
+        error = (y / mean) - 1
+        total_error += error
+    i += 1
+average_mean_error = total_error / len(testing_y)
+print('mean error %: ', average_mean_error)
+
+# guesses more accurately than the mean x % of the time
+total_wins = 0
+i = 0
+for y in testing_y:
+    mean_error = abs(mean - y)
+    pred_error = abs(predicted_bankruptcies[i][0] - y)
+    if pred_error < mean_error:
+        total_wins += 1
+    i += 1
+percent_wins = float(total_wins) / len(testing_y)
+print('Prediction beats mean ', percent_wins, '% of the time')

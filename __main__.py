@@ -1,7 +1,6 @@
 import os # for looping through files in a directory, and getting current directory
 import logging
-import os, sys, csv
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+import sys, csv
 
 from models.PUMA import *
 from models.CountyFragment import *
@@ -12,14 +11,18 @@ from services.person_service import *
 from services.county_service import *
 from services.county_fragment_service import *
 from services.puma_service import *
+from services.population_service import Population_Calculator
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(lineno)d] %(levelname)s: %(message)s', datefmt='%I:%M:%S %p')
 
-dict_of_PUMAs = dict()
-dict_of_households = dict()
-dict_of_people = dict()
-dict_of_counties = dict()
-dict_of_cfs = dict()
+dict_of_PUMAs_by_year = dict()
+dict_of_households_by_year = dict()
+dict_of_people_by_year = dict()
+dict_of_counties_by_year = dict()
+dict_of_cfs_by_year = dict()
+years = dict() # making a dict so that it is easy to not create duplicates
 
 year = '0000'
 
@@ -29,18 +32,34 @@ logging.debug("current_path: %s", current_path)
 if 'bankruptcy' not in current_path:
     current_path = current_path + '/bankruptcy'
 
-# Collect household ACS data
-household_ACS_directory = os.path.join(current_path, 'files/Household_ACS')
-logging.debug("household_ACS_directory: %s", household_ACS_directory)
-for file in os.listdir(household_ACS_directory):
-    filename = os.fsdecode(file)
-    year = filename[0:4]
-    logging.debug('year: %s', year)
-    filepath = os.path.join(household_ACS_directory, filename)
-    logging.info("Collecting data from %s", filepath)
-    dict_of_households.update(get_acs_household_data(filepath, year))
+# Set up Population_By_Year
+population_by_year_directory = os.path.join(current_path, 'files')
+logging.debug("Collecting population change data")
+filepath = os.path.join(population_by_year_directory, 'Population_By_Year.csv')
+population_calculator = Population_Calculator(filepath)
 
-    logging.debug('# of households created: %s', len(dict_of_households))
+issue_log = os.path.join(current_path, 'files/issues.log')
+
+with open(issue_log, 'w') as file:
+    file.write('')
+
+logging.debug('Population change data collected')
+
+# Collect household ACS data
+# household_ACS_directory = os.path.join(current_path, 'files/Household_ACS')
+# logging.debug("household_ACS_directory: %s", household_ACS_directory)
+# for file in os.listdir(household_ACS_directory):
+#     filename = os.fsdecode(file)
+#     year = filename[0:4]
+#     years[year] = ''
+#     filepath = os.path.join(household_ACS_directory, filename)
+#     logging.info("Collecting data from %s", filepath)
+#     if year in dict_of_households_by_year:
+#         dict_of_households_by_year[year].update(get_acs_household_data(filepath, year))
+#     else:
+#         dict_of_households_by_year[year] = get_acs_household_data(filepath, year)
+
+#     logging.debug('# of years of households created: %s', len(dict_of_households_by_year))
 
 # Collect person ACS data
 person_ACS_directory = os.path.join(current_path, 'files/Person_ACS')
@@ -48,12 +67,15 @@ logging.debug("person_ACS_directory: %s", person_ACS_directory)
 for file in os.listdir(person_ACS_directory):
     filename = os.fsdecode(file)
     year = filename[0:4]
-    logging.debug('year: %s', year)
+    years[year] = ''
     filepath = os.path.join(person_ACS_directory, filename)
     logging.info("Collecting data from %s", filepath)
-    dict_of_people.update(get_acs_person_data(filepath, year))
+    if year in dict_of_people_by_year:
+        dict_of_people_by_year[year].update(get_acs_person_data(filepath, year))
+    else:
+        dict_of_people_by_year[year] = get_acs_person_data(filepath, year)
 
-    logging.debug('# of people created: %s', len(dict_of_people))
+    logging.debug('# of years of people created: %s', len(dict_of_people_by_year))
 
 # Collect county data
 county_bankruptcy_directory = os.path.join(current_path, 'files/County_Bankruptcies')
@@ -61,71 +83,144 @@ logging.debug("county_bankruptcy_directory: %s", county_bankruptcy_directory)
 for file in os.listdir(county_bankruptcy_directory):
     filename = os.fsdecode(file)
     year = filename[0:4]
-    logging.debug('year: %s', year)
+    years[year] = ''
     filepath = os.path.join(county_bankruptcy_directory, filename)
     logging.info("Collecting data from %s", filepath)
-    dict_of_counties.update(get_county_data(filepath, year))
+    if year in dict_of_counties_by_year:
+        dict_of_counties_by_year[year].update(get_county_data(filepath, year))
+    else:
+        dict_of_counties_by_year[year] = get_county_data(filepath, year)
 
-    logging.debug('# of counties created: %s', len(dict_of_counties))
+    logging.debug('# of years of counties created: %s', len(dict_of_counties_by_year))
 
 # Collect county_fragment data
 county_to_puma_directory = os.path.join(current_path, 'files')
 logging.debug("county_to_puma_directory: %s", county_to_puma_directory)
 filepath = os.path.join(county_to_puma_directory, 'PUMA_to_county.csv')
-dict_of_cfs = get_cf_data(filepath)
+for year in years:
+    dict_of_cfs_by_year[year] = get_cf_data(filepath, year)
 
-logging.debug('# of CFs created: %s', len(dict_of_cfs))
+logging.debug('# of years of CFs created: %s', len(dict_of_cfs_by_year))
 
 # Collect puma data
-dict_of_PUMAs = get_puma_data(filepath, year)
+for year in years:
+    dict_of_PUMAs_by_year[year] = get_puma_data(filepath, year)
 
-logging.debug('# of PUMAs created: %s', len(dict_of_PUMAs))
+logging.debug('# of years of PUMAs created: %s', len(dict_of_PUMAs_by_year))
 
-for cf_key in dict_of_cfs:
-    cf = dict_of_cfs[cf_key]
-    if cf.county_code in dict_of_counties:
-        county = dict_of_counties[cf.county_code]
-        cf.county = county
-        county.population += float(cf.population)
-        county.used = True
-    else:
-        logging.warning('No county found for county fragment with code %s', cf.county_code)
-    if cf.puma in dict_of_PUMAs:
-        puma = dict_of_PUMAs[cf.puma]
-        puma.cfs.append(cf)
-        dict_of_PUMAs[cf.puma].has_cf = True
-    else:
-        logging.warning('No PUMA found for PUMA id %s', cf.puma)
-for county_key in dict_of_counties:
-    county = dict_of_counties[county_key]
-    if not county.used:
-        logging.warning('County with code: %s, name: %s, and %d bankruptcies not accounted for in county fragments', county.code, county.name, county.bankruptcies)
-for person_key in dict_of_people:
-    person = dict_of_people[person_key]
-    if person.puma in dict_of_PUMAs:
-        puma = dict_of_PUMAs[person.puma]
-        puma.people.append(person)
-        puma.has_person = True
-    else:
-        logging.warning('No PUMA found with id %s for person %s', person.puma, person.serial_number)
-for household_key in dict_of_households:
-    household = dict_of_households[household_key]
-    if household.puma in dict_of_PUMAs:
-        puma = dict_of_PUMAs[household.puma]
-        puma.households.append(household)
-        puma.has_household = True
-    else:
-        pass
-        # logging.warning('No PUMA found with id %s for household %s', household.puma, household.id)
+for year_key in dict_of_cfs_by_year:
+    cfs = dict_of_cfs_by_year[year_key]
+    i = 0
+    for cf_key in cfs:
+        i += 1
+        cf = cfs[cf_key]
+        cf.population = population_calculator.get_population(cf.county_code, year_key, cf.population)
+        b = '1.' + str(i)
+        print (b, end="\r")
 
-for puma_key in dict_of_PUMAs:
-    puma = dict_of_PUMAs[puma_key]
-    if not puma.has_cf:
-        logging.warning('PUMA with id: %s does not have any a county fragments', puma.id)
-    if not puma.has_person:
-        logging.warning('PUMA with id: %s does not have any people', puma.id)
-    # if not puma.has_household:
-    #     logging.warning('PUMA with id: %s does not have any households', puma.id)
+for year_key in dict_of_cfs_by_year:
+    year_of_cfs = dict_of_cfs_by_year[year_key]
+    i = 0
+    for cf_key in year_of_cfs:
+        i += 1
+        cf = year_of_cfs[cf_key]
+        # cf.population = Population_Calculator.get_population(cf.county_code)
+        # county.population += float(cf.population)
+        year_of_counties = dict_of_counties_by_year[year_key]
+        if cf.county_code in year_of_counties:
+            county = year_of_counties[cf.county_code]
+            cf.county = county
+            county.population += float(cf.population)
+            county.used = True
+        else:
+            # logging.warning('No county found for county fragment with code %s', cf.county_code)
+            with open(issue_log, 'a') as file:
+                s = 'No county found for county fragment with code: ' + cf.county_code + '\n'
+                file.write(s)
+        year_of_PUMAs = dict_of_PUMAs_by_year[year_key]
+        if cf.puma in year_of_PUMAs:
+            puma = year_of_PUMAs[cf.puma]
+            puma.cfs.append(cf)
+            year_of_PUMAs[cf.puma].has_cf = True
+        else:
+            # logging.warning('No PUMA found for PUMA id %s', cf.puma)
+            with open(issue_log, 'a') as file:
+                s = 'No PUMA found for PUMA id ' + cf.puma + '\n'
+                file.write(s)
+        b = '2.' + str(i)
+        print (b, end="\r")
+for year_key in dict_of_counties_by_year:
+    year_of_counties = dict_of_counties_by_year[year_key]
+    i = 0
+    for county_key in year_of_counties:
+        i += 1
+        county = year_of_counties[county_key]
+        if not county.used:
+            # logging.warning('County with code: %s, name: %s, and %d bankruptcies not accounted for in county fragments', county.code, county.name, county.bankruptcies)
+            with open(issue_log, 'a') as file:
+                s = 'County with code: ' + county.code + ' not accounted for in county fragments' + '\n'
+                file.write(s)
+        b = '3.' + str(i)
+        print (b, end="\r")
+for year_key in dict_of_people_by_year:
+    year_of_people = dict_of_people_by_year[year_key]
+    i = 0
+    for person_key in year_of_people:
+        i += 1
+        person = year_of_people[person_key]
+        year_of_PUMAs = dict_of_PUMAs_by_year[year_key]
+        if person.puma in year_of_PUMAs:
+            puma = year_of_PUMAs[person.puma]
+            puma.people.append(person)
+            puma.has_person = True
+        else:
+            # logging.warning('No PUMA found with id %s for person %s', person.puma, person.serial_number)
+            with open(issue_log, 'a') as file:
+                s = 'No PUMA found with id: ' + person.puma + ' for person...' + '\n'
+                file.write(s)
+        b = 'Setting up Person ' + str(i) + ' for ' + year_key
+        print (b, end="\r")
+# for year_key in dict_of_households_by_year:
+#     year_of_households = dict_of_households_by_year[year_key]
+#     i = 1
+#     for household_key in year_of_households:
+#         i += 1
+#         household = year_of_households[household_key]
+#         year_of_PUMAs = dict_of_PUMAs_by_year[year_key]
+#         if household.puma in year_of_PUMAs:
+#             puma = year_of_PUMAs[household.puma]
+#             puma.households.append(household)
+#             puma.has_household = True
+#         else:
+#             # logging.warning('No PUMA found with id %s for household %s', household.puma, household.id)
+#             with open(issue_log, 'a') as file:
+#                 s = 'No PUMA found with id: ' + household.puma + ' for household...' + '\n'
+#                 file.write(s)
+#         b = '4.' + str(i)
+#         print (b, end="\r")
+for year_key in dict_of_PUMAs_by_year:
+    year_of_PUMAs = dict_of_PUMAs_by_year[year_key]
+    i = 0
+    for puma_key in year_of_PUMAs:
+        i += 1
+        puma = year_of_PUMAs[puma_key]
+        if not puma.has_cf:
+            # logging.warning('PUMA with id: %s does not have any a county fragments', puma.id)
+            with open(issue_log, 'a') as file:
+                s = 'PUMA with id: ' + puma.id + ' does not have any county fragments' + '\n'
+                file.write(s)
+        if not puma.has_person:
+            # logging.warning('PUMA with id: %s does not have any people', puma.id)
+            with open(issue_log, 'a') as file:
+                s = 'PUMA with id: ' + puma.id + ' does not have any people' + '\n'
+                file.write(s)
+        if not puma.has_household:
+            with open(issue_log, 'a') as file:
+                s = 'PUMA with id: ' + puma.id + ' does not have any households' + '\n'
+                file.write(s)
+        #     logging.warning('PUMA with id: %s does not have any households', puma.id)
+        b = 'Setting up PUMA ' + str(i) + ' for ' + year_key
+        print (b, end="\r")
 
 # columns = ['PUMA-ID', 'Bankruptcy_Rate', 'Median_Age', 'Divorce_Rate', 'In_The_Red_Rate', 'Insured_Rate', '35_to_54', '40_to_44', 'High_School_Grad', 'HS_or_some_college', 'Num_People', 'Num_Households']  
 
@@ -136,23 +231,25 @@ filename = "./files/puma-output.csv"
 with open(filename, 'w') as csvfile:  
     # creating a csv writer object  
     csvwriter = csv.writer(csvfile)
-    csvwriter.writerow(columns) 
-    for puma_key in dict_of_PUMAs:
-        puma = dict_of_PUMAs[puma_key]
-        households = 0
-        try:
-            households = len(puma.households)
-        except:
-            pass
-        people = 0
-        try:
-            people = len(puma.people)
-        except:
-            pass
-        
-        # row = [puma_key, puma.get_bankruptcy_rate(), puma.get_median_age(), puma.get_divorced_rate(), puma.get_in_the_red_rate(), puma.get_insured_rate(), puma.get_portion_35_to_54(), puma.get_portion_40_to_44(), puma.get_highschool_graduation_rate(), puma.get_portion_hs_or_some_college(), people, households]
-        row = [puma.get_divorced_rate(), puma.get_portion_35_to_54(), puma.get_portion_hs_or_some_college(), puma.get_insured_rate(), puma.get_bankruptcy_rate()]
-        csvwriter.writerow(row) 
+    csvwriter.writerow(columns)
+    for year_key in dict_of_PUMAs_by_year:
+        year_of_PUMAs = dict_of_PUMAs_by_year[year_key]
+        for puma_key in year_of_PUMAs:
+            puma = year_of_PUMAs[puma_key]
+            # households = 0
+            # try:
+            #     households = len(puma.households)
+            # except:
+            #     pass
+            # people = 0
+            # try:
+            #     people = len(puma.people)
+            # except:
+            #     pass
+            
+            # row = [puma_key, puma.get_bankruptcy_rate(), puma.get_median_age(), puma.get_divorced_rate(), puma.get_in_the_red_rate(), puma.get_insured_rate(), puma.get_portion_35_to_54(), puma.get_portion_40_to_44(), puma.get_highschool_graduation_rate(), puma.get_portion_hs_or_some_college(), people, households]
+            row = [puma.get_divorced_rate(), puma.get_portion_35_to_54(), puma.get_portion_hs_or_some_college(), puma.get_insured_rate(), puma.get_bankruptcy_rate()]
+            csvwriter.writerow(row) 
         
 logging.info("COMPLETE")
 logging.info("COMPLETE")

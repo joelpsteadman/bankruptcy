@@ -111,6 +111,7 @@ class Household:
 
     def set_year(self, year):
         self.year = year
+        self.puma = self.puma + year
 
     def to_string(self):
         str = "Household: " + self.id

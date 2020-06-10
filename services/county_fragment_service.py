@@ -4,7 +4,7 @@ import numbers
 from models.CountyFragment import *
 from enum import Enum
 
-def get_cf_data(filepath):
+def get_cf_data(filepath, year):
 
     dictionary_of_cfs = dict()
 
@@ -27,8 +27,8 @@ def get_cf_data(filepath):
             while True:
                 row = next(file_reader)
 
-                puma = row[Column.STATE_CODE.value] + row[Column.PUMA.value]
-                county_code = row[Column.COUNTY_CODE.value]
+                puma = row[Column.STATE_CODE.value] + row[Column.PUMA.value] + year
+                county_code = row[Column.COUNTY_CODE.value] + year
                 name = puma + '_' + county_code
                 cf = CountyFragment(name)
                 cf.puma = puma

@@ -21,7 +21,7 @@ def get_puma_data(filepath, year):
         try:
             while True:
                 row = next(file_reader)
-                id = row[Column.STATE_CODE.value] + row[Column.PUMA.value]
+                id = row[Column.STATE_CODE.value] + row[Column.PUMA.value] + year
                 puma = PUMA(id)
                 puma.state = row[Column.STATE.value]
                 puma.year = year

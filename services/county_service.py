@@ -23,7 +23,7 @@ def get_county_data(filepath, year):
 
                         county_row = next(file_reader)
                         while county_row[0]:
-                            code = county_row[1]
+                            code = county_row[1][0:5] + year
                             bankruptcies = 0
                             try:
                                 bankruptcies = int(county_row[2].replace(',', ''))

@@ -29,7 +29,7 @@ def get_acs_person_data(filepath, year):
                 person = Person(serial_number)
                 state = acs_row[Column.ST.value]
                 person.state = state # TODO make an enum of state names and use it here
-                person.puma = state + acs_row[Column.PUMA.value] 
+                person.puma = state + acs_row[Column.PUMA.value] + year
                 person.age = acs_row[Column.AGEP.value]
                 person.education = acs_row[Column.SCHL.value]
                 if acs_row[Column.MAR.value] == '3':

@@ -54,3 +54,27 @@ Average # of variables provided:  3.32140227440072
 05/31/2020 07:08:31 AM - [120] INFO: Average Family Income Per Year: $143565.88
 05/31/2020 07:08:31 AM - [121] INFO: Average Household Income Per Year: $118769.37
 05/31/2020 07:08:31 AM - [122] INFO: Average # of variables provided: 3.163769
+
+## Results
+
+Taking into account (in order of predictive power) divorce(1), age(2), education(3), and insurance(4), with 2010 census data mixed with 2018 puma data and 2014 bankruptcy data, my model is able to predict bankrupcty rate of a PUMA on average to within .7 standard deviations (compared to .711 when predicting with just the mean), to within 95.3 people on average per 100,000 (vs 95.7), is 59% off from the true value on average (vs 60%), and out predicts the mean 50.5% of the time (R^2 - 0.022)
+R^2:  0.022008745560812337
+Mean error:  0.711865662994597
+Prediction error:  [0.70899647]
+1) Percent of a PUMA'S population that is currently divorced (rather than single, widowed, etc)
+    - min: 3%
+    - max: 22%
+    - Higher divorce rate is correlated with higher bankruptcy (R^2 - .03)
+2) Percent of a PUMA's population that is between the ages of 35 and 54
+    - min: 6%
+    - max: 30%
+    - This rate is correlated with higher bankruptcy (R^2 - .035)
+3) Percent of a PUMA's population that has just a high school degree of some college
+    - min: 13%
+    - max: 61%
+    - This rate is correlated with higher bankruptcy (R^2 - .021)
+4) Percent of a PUMA's population that has health insurance
+    - min: 46%
+    - max: 99%
+    - This rate is inversely related with higher bankruptcy (R^2 - .001)
+    
