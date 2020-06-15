@@ -59,23 +59,22 @@ logging.debug('Population change data collected')
 #     else:
 #         dict_of_households_by_year[year] = get_acs_household_data(filepath, year)
 
-#     logging.debug('# of years of households created: %s', len(dict_of_households_by_year))
-
 # Collect person ACS data
 person_ACS_directory = os.path.join(current_path, 'files/Person_ACS')
 logging.debug("person_ACS_directory: %s", person_ACS_directory)
 for file in os.listdir(person_ACS_directory):
+# for file in os.listdir(person_ACS_directory)[0:1]: # just read the first person file to speed up testing time
     filename = os.fsdecode(file)
     year = filename[0:4]
     years[year] = ''
     filepath = os.path.join(person_ACS_directory, filename)
     logging.info("Collecting data from %s", filepath)
+    # numbers = get_responses(filepath, year)
+    # logging.debug('divorced: %s, insured: %s, black: %s, disabled: %s, veteran: %s, immigrant: %s', numbers[0], numbers[1], numbers[2], numbers[3], numbers[4], numbers[5])
     if year in dict_of_people_by_year:
         dict_of_people_by_year[year].update(get_acs_person_data(filepath, year))
     else:
         dict_of_people_by_year[year] = get_acs_person_data(filepath, year)
-
-    logging.debug('# of years of people created: %s', len(dict_of_people_by_year))
 
 # Collect county data
 county_bankruptcy_directory = os.path.join(current_path, 'files/County_Bankruptcies')
@@ -91,8 +90,6 @@ for file in os.listdir(county_bankruptcy_directory):
     else:
         dict_of_counties_by_year[year] = get_county_data(filepath, year)
 
-    logging.debug('# of years of counties created: %s', len(dict_of_counties_by_year))
-
 # Collect county_fragment data
 county_to_puma_directory = os.path.join(current_path, 'files')
 logging.debug("county_to_puma_directory: %s", county_to_puma_directory)
@@ -100,13 +97,9 @@ filepath = os.path.join(county_to_puma_directory, 'PUMA_to_county.csv')
 for year in years:
     dict_of_cfs_by_year[year] = get_cf_data(filepath, year)
 
-logging.debug('# of years of CFs created: %s', len(dict_of_cfs_by_year))
-
 # Collect puma data
 for year in years:
     dict_of_PUMAs_by_year[year] = get_puma_data(filepath, year)
-
-logging.debug('# of years of PUMAs created: %s', len(dict_of_PUMAs_by_year))
 
 for year_key in dict_of_cfs_by_year:
     cfs = dict_of_cfs_by_year[year_key]
@@ -178,7 +171,7 @@ for year_key in dict_of_people_by_year:
             with open(issue_log, 'a') as file:
                 s = 'No PUMA found with id: ' + person.puma + ' for person...' + '\n'
                 file.write(s)
-        b = 'Setting up Person ' + str(i) + ' for ' + year_key
+        b = 'Setting up Person ' + str(i) + ' for ' + year_key + '    '
         print (b, end="\r")
 # for year_key in dict_of_households_by_year:
 #     year_of_households = dict_of_households_by_year[year_key]
@@ -219,12 +212,10 @@ for year_key in dict_of_PUMAs_by_year:
                 s = 'PUMA with id: ' + puma.id + ' does not have any households' + '\n'
                 file.write(s)
         #     logging.warning('PUMA with id: %s does not have any households', puma.id)
-        b = 'Setting up PUMA ' + str(i) + ' for ' + year_key
+        b = 'Setting up PUMA ' + str(i) + ' for ' + year_key + '    '
         print (b, end="\r")
 
-# columns = ['PUMA-ID', 'Bankruptcy_Rate', 'Median_Age', 'Divorce_Rate', 'In_The_Red_Rate', 'Insured_Rate', '35_to_54', '40_to_44', 'High_School_Grad', 'HS_or_some_college', 'Num_People', 'Num_Households']  
-
-columns = ['Divorce', 'Age', 'Education', 'Insurance', 'Bankruptcy']
+columns = ['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed', 'Bankruptcy']
 # name of output file  
 filename = "./files/puma-output.csv"
 # writing to csv file  
@@ -236,21 +227,15 @@ with open(filename, 'w') as csvfile:
         year_of_PUMAs = dict_of_PUMAs_by_year[year_key]
         for puma_key in year_of_PUMAs:
             puma = year_of_PUMAs[puma_key]
-            # households = 0
-            # try:
-            #     households = len(puma.households)
-            # except:
-            #     pass
-            # people = 0
-            # try:
-            #     people = len(puma.people)
-            # except:
-            #     pass
             
-            # row = [puma_key, puma.get_bankruptcy_rate(), puma.get_median_age(), puma.get_divorced_rate(), puma.get_in_the_red_rate(), puma.get_insured_rate(), puma.get_portion_35_to_54(), puma.get_portion_40_to_44(), puma.get_highschool_graduation_rate(), puma.get_portion_hs_or_some_college(), people, households]
-            row = [puma.get_divorced_rate(), puma.get_portion_35_to_54(), puma.get_portion_hs_or_some_college(), puma.get_insured_rate(), puma.get_bankruptcy_rate()]
-            if puma.get_bankruptcy_rate() != 'NA':
+            bankruptcy_rate = puma.get_bankruptcy_rate()
+            row = [puma.get_divorced_rate(), puma.get_portion_35_to_54(), puma.get_portion_hs_or_some_college(), puma.get_insured_rate(), puma.get_black_rate(), puma.get_disabled_rate(), puma.get_veteran_rate(), puma.get_immigrant_rate(), puma.get_unemployed_rate(), bankruptcy_rate]
+            if bankruptcy_rate != 'NA':
                 csvwriter.writerow(row)
+                if bankruptcy_rate > 0.01:
+                    with open(issue_log, 'a') as file:
+                        s = 'Bankruptcy rate is ' + str(bankruptcy_rate) + ' for puma ' + puma.id + '\n'
+                        file.write(s)
             else:
                 with open(issue_log, 'a') as file:
                     s = 'Bankruptcy is NA for puma with id: ' + puma.id + '\n'

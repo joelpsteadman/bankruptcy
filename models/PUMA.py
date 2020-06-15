@@ -97,3 +97,41 @@ class PUMA:
             if person.insured:
                 num_insured += 1
         return float(num_insured) / len(self.people)
+
+    def get_black_rate(self):
+        num_black = 0
+        for person in self.people:
+            if person.black:
+                num_black += 1
+        return float(num_black) / len(self.people)
+
+    def get_disabled_rate(self):
+        num_disabled = 0
+        for person in self.people:
+            if person.disabled:
+                num_disabled += 1
+        return float(num_disabled) / len(self.people)
+
+    def get_veteran_rate(self):
+        num_veteran = 0
+        total = 0
+        for person in self.people:
+            if not person.veteran == 'NA':
+                total += 1
+                if person.veteran:
+                    num_veteran += 1
+        return float(num_veteran) / total
+
+    def get_immigrant_rate(self):
+        num_immigrant = 0
+        for person in self.people:
+            if person.immigrant:
+                num_immigrant += 1
+        return float(num_immigrant) / len(self.people)
+
+    def get_unemployed_rate(self):
+        num_unemployed = 0
+        for person in self.people:
+            if person.unemployed:
+                num_unemployed += 1
+        return float(num_unemployed) / len(self.people)

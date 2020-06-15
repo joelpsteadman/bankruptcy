@@ -14,11 +14,11 @@ def partition(data_set, training_set_portion):
 
 # def learn(training_inputs, training_outputs, test_inputs, test_outputs):
 df = pandas.read_csv("./files/puma-output.csv")
-training_set, testing_set = train_test_split(df, test_size=0.2, random_state=42, shuffle=True)
+training_set, testing_set = train_test_split(df, test_size=0.2, shuffle=True)
 
-training_X = training_set[['Divorce', 'Age', 'Education', 'Insurance']]
+training_X = training_set[['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed']]
 training_y = training_set['Bankruptcy']
-testing_X = testing_set[['Divorce', 'Age', 'Education', 'Insurance']]
+testing_X = testing_set[['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed']]
 testing_y = testing_set['Bankruptcy']
 
 print("len(df) ", len(df), "; len(training_set): ", len(training_set), "; len(testing_set):", len(testing_set))
@@ -29,7 +29,7 @@ regr.fit(training_X, training_y)
 testing_X = testing_X.values.tolist()
 predicted_bankruptcies = []
 for puma in testing_X:
-    predicted_bankruptcies.append(regr.predict([[puma[0], puma[1], puma[2], puma[3]]]))
+    predicted_bankruptcies.append(regr.predict([[puma[0], puma[1], puma[2], puma[3], puma[4], puma[5], puma[6], puma[7], puma[8]]]))
 
 # print(predicted_bankruptcies)
 
@@ -220,7 +220,7 @@ i = 0
 for y in testing_y:
     median_error = abs(median - y)
     pred_error = abs(predicted_bankruptcies[i][0] - y)
-    if pred_error < median_error:
+    if pred_error <= median_error:
         total_wins += 1
     i += 1
 percent_wins = float(total_wins) / len(testing_y)
