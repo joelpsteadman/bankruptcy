@@ -1,9 +1,14 @@
-import numpy
-import pandas
-import statistics, csv
+import numpy, pandas
+import statistics, csv, os
 from sklearn.metrics import r2_score
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
+from Utilities import Logger
+
+# set up personal logger
+logger = Logger()
+current_path = os.getcwd()
+logger.define_issue_log(os.path.join(current_path, 'files/issues.log'))
 
 def partition(data_set, training_set_portion): 
     data_set.shuffle()
@@ -21,8 +26,8 @@ training_y = training_set['Bankruptcy']
 testing_X = testing_set[['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed']]
 testing_y = testing_set['Bankruptcy']
 
-print("len(df) ", len(df), "; len(training_set): ", len(training_set), "; len(testing_set):", len(testing_set))
-# print("Training inputs: ", train_inputs['train'], "Testing inputs ", test_inputs['test'])
+logger.log("len(df) ", len(df), "; len(training_set): ", len(training_set), "; len(testing_set):", len(testing_set))
+# logger.log("Training inputs: ", train_inputs['train'], "Testing inputs ", test_inputs['test'])
 regr = linear_model.LinearRegression()
 regr.fit(training_X, training_y)
 
@@ -31,7 +36,7 @@ predicted_bankruptcies = []
 for puma in testing_X:
     predicted_bankruptcies.append(regr.predict([[puma[0], puma[1], puma[2], puma[3], puma[4], puma[5], puma[6], puma[7], puma[8]]]))
 
-# print(predicted_bankruptcies)
+# logger.log(predicted_bankruptcies)
 
 # x = numpy.random.normal(3, 1, 100)
 # y = numpy.random.normal(150, 40, 100) / x
@@ -47,9 +52,9 @@ for puma in testing_X:
 # r2 = r2_score(test_y, mymodel(test_x))
 r2 = r2_score(testing_y, predicted_bankruptcies)
 
-print("R^2: ", r2)
+logger.log("R^2: ", r2)
 
-# print(mymodel(5))
+# logger.log(mymodel(5))
 
 # r2_score(y_true, y_pred)
 
@@ -70,7 +75,7 @@ for y in testing_y:
     error = abs(mean - y)
     total_error += error
 average_mean_error = total_error * 100000/ len(testing_y)
-print('Mean error: ', average_mean_error)
+logger.log('Mean error: ', average_mean_error)
 
 # calculate how far (in stddev's) the prediction is from the truth on average
 total_error = 0.0
@@ -80,7 +85,7 @@ for y in testing_y:
     total_error += error
     i += 1
 average_mean_error = total_error * 100000 / len(testing_y)
-print('Prediction error: ', average_mean_error)
+logger.log('Prediction error: ', average_mean_error)
 
 columns = ['Prediction', 'Actual', 'Mean']
 # name of output file  
@@ -112,7 +117,7 @@ for y in testing_y:
         total_error += error
     i += 1
 average_mean_error = total_error / len(testing_y)
-print('Prediction error %: ', average_mean_error)
+logger.log('Prediction error %: ', average_mean_error)
 
 total_error = 0.0
 i = 0
@@ -128,7 +133,7 @@ for y in testing_y:
         total_error += error
     i += 1
 average_mean_error = total_error / len(testing_y)
-print('mean error %: ', average_mean_error)
+logger.log('mean error %: ', average_mean_error)
 
 # guesses more accurately than the mean x % of the time
 total_wins = 0
@@ -140,7 +145,7 @@ for y in testing_y:
         total_wins += 1
     i += 1
 percent_wins = float(total_wins) / len(testing_y)
-print('Prediction beats mean ', percent_wins, '% of the time')
+logger.log('Prediction beats mean ', percent_wins, '% of the time')
 
 # COMPARE TO MEDIAN ################################################################################
 
@@ -154,7 +159,7 @@ for y in testing_y:
     error = abs(median - y)
     total_error += error
 average_median_error = total_error * 100000/ len(testing_y)
-print('median error: ', average_median_error)
+logger.log('median error: ', average_median_error)
 
 # calculate how far (in stddev's) the prediction is from the truth on average
 total_error = 0.0
@@ -164,7 +169,7 @@ for y in testing_y:
     total_error += error
     i += 1
 average_median_error = total_error * 100000 / len(testing_y)
-print('Prediction error: ', average_median_error)
+logger.log('Prediction error: ', average_median_error)
 
 columns = ['Prediction', 'Actual', 'median']
 # name of output file  
@@ -196,7 +201,7 @@ for y in testing_y:
         total_error += error
     i += 1
 average_median_error = total_error / len(testing_y)
-print('Prediction error %: ', average_median_error)
+logger.log('Prediction error %: ', average_median_error)
 
 total_error = 0.0
 i = 0
@@ -212,7 +217,7 @@ for y in testing_y:
         total_error += error
     i += 1
 average_median_error = total_error / len(testing_y)
-print('median error %: ', average_median_error)
+logger.log('median error %: ', average_median_error)
 
 # guesses more accurately than the median x % of the time
 total_wins = 0
@@ -224,4 +229,4 @@ for y in testing_y:
         total_wins += 1
     i += 1
 percent_wins = float(total_wins) / len(testing_y)
-print('Prediction beats median ', percent_wins, '% of the time')
+logger.log('Prediction beats median ', percent_wins, '% of the time')

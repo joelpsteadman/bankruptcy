@@ -77,6 +77,7 @@ Taking into account (in order of predictive power) divorce(1), age(2), health in
     - max: 64%
     - This rate is correlated with higher bankruptcy (R^2 - .010)
 
+### June 10, 2020 Results:
 len(df)  14103 ; len(training_set):  11282 ; len(testing_set): 2821
 R^2:  0.04275453607429536
 Mean error:  114.61877787853518
@@ -89,3 +90,17 @@ Prediction error:  [111.24480827]
 Prediction error %:  0.32739957667083
 median error %:  0.32493936932453793
 Prediction beats median  0.4551577454803261 % of the time
+
+### June 15, 2020 Results:
+len(df)  14103 ; len(training_set):  7051 ; len(testing_set): 7052
+R^2:  0.12527309888662286
+Mean error:  115.92694050268592
+Prediction error:  [106.86243725]
+Prediction error %:  0.31723699506498926
+mean error %:  0.33934226686556174
+Prediction beats mean  0.5792682926829268 % of the time
+median error:  111.27164557279681
+Prediction error:  [106.86243725]
+Prediction error %:  0.31723699506498926
+median error %:  0.32876928961909524
+Prediction beats median  0.5107770845150312 % of the time
