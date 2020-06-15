@@ -1,10 +1,15 @@
-import csv
-import numbers
-
-from models.Person import *
+import csv, numbers, os
 from enum import Enum
 
+from models.Person import *
+from Utilities import Logger
+
 def get_acs_person_data(filepath, year):
+
+    # set up personal logger
+    logger = Logger()
+    current_path = os.getcwd()
+    logger.define_issue_log(os.path.join(current_path, 'files/issues.log'))
 
     dictionary_of_people = dict()
 
@@ -27,6 +32,7 @@ def get_acs_person_data(filepath, year):
             NWAB = line.index('NWAB') # 1 = temp work absence; 2 = no
 
         try:
+            i = 0
             while True:
                 acs_row = next(file_reader)
 
@@ -71,9 +77,12 @@ def get_acs_person_data(filepath, year):
                     person.unemployed = 'NA'
                 id = serial_number + state + year
                 dictionary_of_people[id] = person
+                # i += 1
+                # logger.log('Setting up person #', format(i, ',d'), erase=True)
         except StopIteration:
             pass
 
+    logger.log('Created', format(len(dictionary_of_people), ',d'), 'people from', filepath)
     return dictionary_of_people
     
 

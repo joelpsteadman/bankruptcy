@@ -8,7 +8,7 @@ def dollarValueOf(number):
 class Logger:
     def __init__(self):
         self.start_time = datetime.now()
-        print('\n0:00:00.00 - Starting Application')
+        self.num_issues = 0
 
     def format(self, args, delimiter=' '):
         delta_time = datetime.now() - self.start_time
@@ -22,9 +22,8 @@ class Logger:
         return output
 
     def log(self, *args, erase=False, delimiter=' '):
-        output = self.format(args, delimiter)
+        output = self.format(args, delimiter) + '              '
         if erase:
-            output += '                      '
             print(output, end="\r")
         else:
             print(output)
@@ -34,8 +33,12 @@ class Logger:
         if overwrite:
             with open(file_path, 'w') as file:
                 file.write('')
+        self.num_issues = self.num_issues + 1
 
     def record_issue(self, *args, erase=False, delimiter=' '):
         with open(self.issue_log, 'a') as file:
             output = self.format(args, delimiter) + '\n'
             file.write(output)
+
+    def get_num_issues(self):
+        return self.num_issues

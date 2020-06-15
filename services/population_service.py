@@ -1,5 +1,7 @@
-import csv
+import csv, os
 from enum import Enum
+
+from Utilities import Logger
 
 class Population_Calculator:
     def __init__(self, filepath):
@@ -49,7 +51,9 @@ class Population_Calculator:
             ratio = (pop_this_year / pop_2010)
             return float(given_population) * ratio
         except (KeyError):
-            with open('files/issues.log', 'a') as file:
-                s = 'No population data for county: ' + code + '\n'
-                file.write(s)
+            # set up personal logger
+            logger = Logger()
+            current_path = os.getcwd()
+            logger.define_issue_log(os.path.join(current_path, 'files/issues.log'))
+            logger.record_issue('No population data for county:', code)
             return given_population
