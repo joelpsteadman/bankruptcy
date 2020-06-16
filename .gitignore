@@ -7,3 +7,5 @@ config.py
 /.vscode
 files/*
 !files/puma-output.csv
+!files/Population_By_Year.csv
+!files/PUMA_to_County.csv
