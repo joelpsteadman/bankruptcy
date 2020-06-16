@@ -5,4 +5,5 @@ config.py
 *.py[co]
 /.idea
 /.vscode
-files/
+files/*
+!files/puma-output.csv
