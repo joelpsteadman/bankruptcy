@@ -2,7 +2,9 @@
 
 *Written in Python 3*
 
-### Set Up Data
+## How-To:
+
+### Set Up Data:
 * ACS person data:
     * Create a folder called 'Person_ACS' in the files/ folder
     * Get single year ACS Person Files from this [census website](https://www.census.gov/programs-surveys/acs/data/pums.html).
@@ -35,61 +37,6 @@
     * Requires the open source packages pandas, numpy, and sklearn which can be installed using pip
     * To check whether you have pip installed run `pip --version` and to install it run `sudo easy_install pip`
     * To install these packages run `pip install numpy`, `pip install pandas`, and `pip install sklearn`
-
----
-
-## How-To
-
-### Set up more years
-
-* Always name files starting with their year
-
-#### County Bankruptcy Data
-
-- Data for bankruptcies by county and year can be found here: https://www.uscourts.gov/report-name/bankruptcy-filings?tn=&pt=All&t=534&m%5Bvalue%5D%5Bmonth%5D=&y%5Bvalue%5D%5Byear%5D=2018
-    - Select bankruptcy from the topic drop-down menu and the year that you want
-    - Look for the link for "U.S. Bankruptcy Courts - Business and Nonbusiness Cases Filed, by Chapter of the Bankruptcy Code, District, and County”
-    - The PDF will give you a pretty view, but you need the csv file
-    - Click on the link then download the CSV
-    - Edit the CSV thus:
-        - Copy the Circ/Dist and County column to column A
-        - Copy the county code column into column B
-        - Copy the total non business bankruptcies column to column C
-        - Delete all other data
-        - Unmerge all cells
-        - Remove data from the top few columns (can accept any number of leading blank rows)
-
----
-
-## findings
-
-(this section is old and needs updated)
-
-* Average people per household: 1.840791949603207
-* Average Family Income Per Year: 35803.37950994028
-* Average Household Income Per Year: 46201.31373230794
-
-Entries with family income:  24386 / 48892
-Entries with household income:  38038 / 48892
-Average People Per Household:  1.840791949603207
-Average Family Income Per Year:  $143565.88
-Average Household Income Per Year:  $118769.37
-
-Households below $0 budget:  2269
-Entries with family income:  24386 / 48892
-Entries with household income:  38038 / 48892
-Average People Per Household:  1.840791949603207
-Average Family Income Per Year:  $143565.88
-Average Household Income Per Year:  $118769.37
-Average # of variables provided:  3.32140227440072
-
-05/31/2020 07:08:31 AM - [116] INFO: Households below $0 budget: 2679
-05/31/2020 07:08:31 AM - [117] INFO: Entries with family income: 24386/48892
-05/31/2020 07:08:31 AM - [118] INFO: Entries with household income: 38038/48892
-05/31/2020 07:08:31 AM - [119] INFO: Average People Per Household: 1.840792
-05/31/2020 07:08:31 AM - [120] INFO: Average Family Income Per Year: $143565.88
-05/31/2020 07:08:31 AM - [121] INFO: Average Household Income Per Year: $118769.37
-05/31/2020 07:08:31 AM - [122] INFO: Average # of variables provided: 3.163769
 
 ---
 
@@ -141,3 +88,35 @@ Prediction error:  [106.86243725]
 Prediction error %:  0.31723699506498926
 median error %:  0.32876928961909524
 Prediction beats median  0.5107770845150312 % of the time
+
+---
+
+## Misc. Findings
+
+(this section is old and needs updated)
+
+* Average people per household: 1.840791949603207
+* Average Family Income Per Year: 35803.37950994028
+* Average Household Income Per Year: 46201.31373230794
+
+Entries with family income:  24386 / 48892
+Entries with household income:  38038 / 48892
+Average People Per Household:  1.840791949603207
+Average Family Income Per Year:  $143565.88
+Average Household Income Per Year:  $118769.37
+
+Households below $0 budget:  2269
+Entries with family income:  24386 / 48892
+Entries with household income:  38038 / 48892
+Average People Per Household:  1.840791949603207
+Average Family Income Per Year:  $143565.88
+Average Household Income Per Year:  $118769.37
+Average # of variables provided:  3.32140227440072
+
+05/31/2020 07:08:31 AM - [116] INFO: Households below $0 budget: 2679
+05/31/2020 07:08:31 AM - [117] INFO: Entries with family income: 24386/48892
+05/31/2020 07:08:31 AM - [118] INFO: Entries with household income: 38038/48892
+05/31/2020 07:08:31 AM - [119] INFO: Average People Per Household: 1.840792
+05/31/2020 07:08:31 AM - [120] INFO: Average Family Income Per Year: $143565.88
+05/31/2020 07:08:31 AM - [121] INFO: Average Household Income Per Year: $118769.37
+05/31/2020 07:08:31 AM - [122] INFO: Average # of variables provided: 3.163769
