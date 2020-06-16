@@ -178,7 +178,7 @@ for year_key in dict_of_PUMAs_by_year:
             logger.record_issue('PUMA with id:', puma.id, 'does not have any people')
         # if not puma.has_household:
         #     logger.record_issue('PUMA with id:', puma.id, 'does not have any households')
-        logger.log('Setting up PUMA', i, 'in', year_key, erase=True)
+        logger.log('Checking that PUMA', i, 'in', year_key, 'has people and cfs', erase=True)
 
 columns = ['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed', 'Bankruptcy']
 # name of output file  
