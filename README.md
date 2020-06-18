@@ -27,6 +27,16 @@ Model predicts better than the median 51% of the time
 
 Model predicts within 1 standard deviation 79% of the time
 
+### Data Table
+
+|             | Black | Divorce | Age  | Immigrant | Insurance | Education | Disabled | Unemployed | Veteran | Bankruptcy  / 100,000 |
+|-------------|-------|---------|------|-----------|-----------|-----------|----------|------------|---------|-----------------------|
+| Min         | 0%    | 3%      | 5%   | 0%        | 45%       | 12%       | 5%       | 37%        | 0%      | 0                     |
+| Median      | 7%    | 12%     | 16%  | 7%        | 92%       | 43%       | 19%      | 65%        | 7%      | 223                   |
+| Average     | 13%   | 12%     | 17%  | 11%       | 90%       | 42%       | 19%      | 65%        | 7%      | 260                   |
+| Max         | 97%   | 23%     | 34%  | 76%       | 100%      | 64%       | 43%      | 86%        | 50%     |                 1,425 |
+| R2          | 0.10  | 0.03    | 0.02 | 0.02      | 0.01      | 0.01      | 0.01     | 0.00       | 0.00    |                       |
+| Correlation | 0.31  | 0.17    | 0.15 | -0.13     | -0.12     | 0.10      | 0.09     | -0.05      | 0.04    |                       |
 
 ---
 
