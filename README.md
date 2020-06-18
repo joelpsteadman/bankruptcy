@@ -29,7 +29,7 @@ Model predicts within 1 standard deviation 79% of the time
 
 ### Data Table
 
-|             | Black | Divorce | Age  | Immigrant | Insurance | Education | Disabled | Unemployed | Veteran | Bankruptcy  / 100,000 |
+|             | Race | Divorce | Age  | Immigrant | Insurance | Education | Disability | Unemployment | Veteran | Bankruptcy  / 100,000 |
 |-------------|-------|---------|------|-----------|-----------|-----------|----------|------------|---------|-----------------------|
 | Min         | 0%    | 3%      | 5%   | 0%        | 45%       | 12%       | 5%       | 37%        | 0%      | 0                     |
 | Median      | 7%    | 12%     | 16%  | 7%        | 92%       | 43%       | 19%      | 65%        | 7%      | 223                   |
