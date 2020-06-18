@@ -19,8 +19,10 @@ def partition(data_set, training_set_portion):
 
 # def learn(training_inputs, training_outputs, test_inputs, test_outputs):
 df = pandas.read_csv("./files/puma-output.csv")
-training_set, testing_set = train_test_split(df, test_size=0.2, shuffle=True)
+all_X = df[['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed']]
+all_y = df['Bankruptcy']
 
+training_set, testing_set = train_test_split(df, test_size=0.2, shuffle=True)
 training_X = training_set[['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed']]
 training_y = training_set['Bankruptcy']
 testing_X = testing_set[['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed']]
@@ -69,13 +71,13 @@ testing_y = testing_y.values.tolist()
 
 # calculate how far (in stddev's) the mean is from the truth on average
 stddev = statistics.stdev(testing_y)
-mean = statistics.mean(testing_y)
+mean = statistics.mean(training_y)
 total_error = 0.0
 for y in testing_y:
     error = abs(mean - y)
     total_error += error
 average_mean_error = total_error * 100000/ len(testing_y)
-logger.log('Mean error: ', average_mean_error)
+logger.log('Mean error:', average_mean_error)
 
 # calculate how far (in stddev's) the prediction is from the truth on average
 total_error = 0.0
@@ -85,7 +87,7 @@ for y in testing_y:
     total_error += error
     i += 1
 average_mean_error = total_error * 100000 / len(testing_y)
-logger.log('Prediction error: ', average_mean_error)
+logger.log('Prediction error:', average_mean_error)
 
 columns = ['Prediction', 'Actual', 'Mean']
 # name of output file  
@@ -117,7 +119,7 @@ for y in testing_y:
         total_error += error
     i += 1
 average_mean_error = total_error / len(testing_y)
-logger.log('Prediction error %: ', average_mean_error)
+logger.log('Prediction error %:', average_mean_error)
 
 total_error = 0.0
 i = 0
@@ -133,7 +135,7 @@ for y in testing_y:
         total_error += error
     i += 1
 average_mean_error = total_error / len(testing_y)
-logger.log('mean error %: ', average_mean_error)
+logger.log('mean error %:', average_mean_error)
 
 # guesses more accurately than the mean x % of the time
 total_wins = 0
@@ -145,7 +147,7 @@ for y in testing_y:
         total_wins += 1
     i += 1
 percent_wins = float(total_wins) / len(testing_y)
-logger.log('Prediction beats mean ', percent_wins, '% of the time')
+logger.log('Prediction beats mean', percent_wins, '% of the time')
 
 # COMPARE TO MEDIAN ################################################################################
 
@@ -159,7 +161,7 @@ for y in testing_y:
     error = abs(median - y)
     total_error += error
 average_median_error = total_error * 100000/ len(testing_y)
-logger.log('median error: ', average_median_error)
+logger.log('median error:', average_median_error)
 
 # calculate how far (in stddev's) the prediction is from the truth on average
 total_error = 0.0
@@ -169,7 +171,7 @@ for y in testing_y:
     total_error += error
     i += 1
 average_median_error = total_error * 100000 / len(testing_y)
-logger.log('Prediction error: ', average_median_error)
+logger.log('Prediction error:', average_median_error)
 
 columns = ['Prediction', 'Actual', 'median']
 # name of output file  
@@ -201,7 +203,7 @@ for y in testing_y:
         total_error += error
     i += 1
 average_median_error = total_error / len(testing_y)
-logger.log('Prediction error %: ', average_median_error)
+logger.log('Prediction error %:', average_median_error)
 
 total_error = 0.0
 i = 0
@@ -217,7 +219,7 @@ for y in testing_y:
         total_error += error
     i += 1
 average_median_error = total_error / len(testing_y)
-logger.log('median error %: ', average_median_error)
+logger.log('median error %:', average_median_error)
 
 # guesses more accurately than the median x % of the time
 total_wins = 0
@@ -229,4 +231,112 @@ for y in testing_y:
         total_wins += 1
     i += 1
 percent_wins = float(total_wins) / len(testing_y)
-logger.log('Prediction beats median ', percent_wins, '% of the time')
+logger.log('Prediction beats median', percent_wins, '% of the time')
+
+
+# COMPARE TO ALL ################################################################################
+
+all_y = all_y.values.tolist()
+
+# calculate how far (in stddev's) the median is from the truth on average
+stddev = statistics.stdev(all_y)
+all_median = statistics.median(all_y)
+total_error = 0.0
+for y in all_y:
+    error = abs(all_median - y)
+    total_error += error
+average_median_error = total_error * 100000/ len(all_y)
+logger.log('median error:', average_median_error)
+regr = linear_model.LinearRegression()
+regr.fit(all_X, all_y)
+
+all_X = all_X.values.tolist()
+predicted_bankruptcies = []
+for puma in all_X:
+    predicted_bankruptcies.append(regr.predict([[puma[0], puma[1], puma[2], puma[3], puma[4], puma[5], puma[6], puma[7], puma[8]]]))
+
+r2 = r2_score(all_y, predicted_bankruptcies)
+
+logger.log("R^2: ", r2)
+
+# calculate how far (in stddev's) the prediction is from the truth on average
+total_error = 0.0
+i = 0
+for y in all_y:
+    error = abs(predicted_bankruptcies[i] - y)
+    total_error += error
+    i += 1
+average_median_error = total_error * 100000 / len(all_y)
+logger.log('Prediction error:', average_median_error)
+
+columns = ['Prediction', 'Actual']
+# name of output file  
+filename = "./files/learn-output.csv"
+# writing to csv file  
+with open(filename, 'w') as csvfile:  
+    # creating a csv writer object  
+    csvwriter = csv.writer(csvfile)
+    csvwriter.writerow(columns)
+    i = 0
+    for y in all_y:
+        row = [predicted_bankruptcies[i][0] * 100000, all_y[i] * 100000]
+        csvwriter.writerow(row)
+        i += 1
+
+# what % off am I on average?
+total_error = 0.0
+i = 0
+for y in all_y:
+    prediction = predicted_bankruptcies[i][0]
+    if prediction < y:
+        if not y: # y is 0.0
+            error = 1 - (prediction / 0.0001)
+        else:
+            error = 1 - (prediction / y)
+        total_error += error
+    else:
+        error = 1 - (y / prediction)
+        total_error += error
+    i += 1
+average_median_error = total_error / len(all_y)
+logger.log('Prediction error %:', average_median_error)
+
+total_error = 0.0
+i = 0
+for y in all_y:
+    if all_median < y:
+        if not y: # y is 0.0
+            error = 1 - (all_median / 0.0001)
+        else:
+            error = 1 - (all_median / y)
+        total_error += error
+    else:
+        error = 1 - (y / all_median)
+        total_error += error
+    i += 1
+average_median_error = total_error / len(all_y)
+logger.log('median error %:', average_median_error)
+
+# guesses more accurately than the median x % of the time
+total_wins = 0
+i = 0
+for y in all_y:
+    median_error = abs(all_median - y)
+    pred_error = abs(predicted_bankruptcies[i][0] - y)
+    if pred_error <= median_error:
+        total_wins += 1
+    i += 1
+percent_wins = float(total_wins) / len(all_y)
+logger.log('Prediction beats median', percent_wins, '% of the time')
+
+# guesses within 1 stddev % of the time
+total_wins = 0
+i = 0
+for y in all_y:
+    # median_error = abs(all_median - y)
+    pred_error = abs(predicted_bankruptcies[i][0] - y)
+    if pred_error <= stddev:
+        total_wins += 1
+    i += 1
+percent_wins = float(total_wins) / len(all_y)
+logger.log('Prediction is within 1 standard deviation', percent_wins, '% of the time')
