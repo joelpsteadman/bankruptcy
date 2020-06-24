@@ -27,6 +27,43 @@ Model predicts better than the median 51% of the time
 
 Model predicts within 1 standard deviation 79% of the time
 
+```
+(b = bankruptcy or bankruptcies)              
+Total # of PUMA-year entries:                               14,103              
+# of entries in training set:                               11,282              
+# of entries in testing set                                 2,821              
+R^2 of the model from the training set when applied to the testing set: 0.12056985102494233              
+b in a PUMA per 100,000 people in the test set is 115 from the average of the training set              
+b in a PUMA per 100,000 people in the test set is 108.0 from the prediction based on the training model              
+Predicted bankruptcy rate based on the training set is 32.0 % off, on average, from the real value for each PUMA in the test set              
+Average bankruptcy rate of the training set is 34 % off, on average, when used to predict that of each PUMA in the test set              
+Prediction beats mean 60.0 % of the time in this test set              
+Real test set b-rate:                                       0.262 %              
+Median test set b-rate:                                     0.223 %              
+Mean test set b-rate:                                       0.26 %              
+Predicted test set b-rate:                                  0.26 %              
+Real # of b in this test set:                               738,774              
+Real b - predicted b in this test set:                      4,385              
+b in a PUMA per 100,000 people in the test set is 111 from the average of the training set on average              
+Median b-rate of the training set is 33 % off, on average, when used to predict that of each PUMA in the test set              
+Prediction beats median 49.5 % of the time in this test set              
+b in a PUMA per 100,000 people for all entries is 111 from the average of the training set on average              
+R^2 for the entire dataset:                                 0.13744617491860567              
+b in a PUMA per 100,000 people in the test set is 107.0 from the prediction when trained on the entire dataset on average              
+Predicted b-rate based on the entire data set is 32.0 % off, on average, from the real value for each PUMA              
+Median b-rate of the entire dataset is 33 % off, on average, when used to predict that of each PUMA              
+Prediction beats median 49.9 % of the time when trained and tested on the entire dataset              
+Prediction is within 1 standard deviation 78.9 % of the time when trained and tested on the entire dataset               
+Real b-rate:                                                0.26 %              
+Median b-rate:                                              0.223 %              
+Mean b-rate:                                                0.26 %              
+Predicted b-rate:                                           0.26 %              
+Real # of b per year in entire dataset per year:            807,028              
+Real b - predicted b per year in the entire dataset:        0              
+Predicted b-rate if all Americans had health insurance:     0.25 %              
+Predicted b per year if all Americans had health insurance: 773,816 ( 33,212 less )
+```
+
 ### Data Table
 
 |             | Race | Divorce | Age  | Immigrant | Insurance | Education | Disability | Unemployment | Veteran | Bankruptcy  / 100,000 |
