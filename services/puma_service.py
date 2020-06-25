@@ -15,6 +15,7 @@ def get_puma_data(filepath, year):
             PUMA = line.index('puma12')
             STATE_CODE = line.index('state')
             STATE = line.index('stab')
+            NAME = line.index('PUMAname')
 
         next(file_reader) # skip extra header line
 
@@ -23,6 +24,7 @@ def get_puma_data(filepath, year):
                 row = next(file_reader)
                 id = row[Column.STATE_CODE.value] + row[Column.PUMA.value] + year
                 puma = PUMA(id)
+                puma.name = row[Column.NAME.value]
                 puma.state = row[Column.STATE.value]
                 puma.year = year
                 dictionary_of_pumas[id] = puma

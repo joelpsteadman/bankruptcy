@@ -173,14 +173,14 @@ for year_key in dict_of_PUMAs_by_year:
         i += 1
         puma = year_of_PUMAs[puma_key]
         if not puma.has_cf:
-            logger.record_issue('PUMA with id:', puma.id, 'does not have any county fragments')
+            logger.record_issue('PUMA with name:', puma.name, 'does not have any county fragments')
         if not puma.has_person:
-            logger.record_issue('PUMA with id:', puma.id, 'does not have any people')
+            logger.record_issue('PUMA with name:', puma.name, 'does not have any people')
         # if not puma.has_household:
-        #     logger.record_issue('PUMA with id:', puma.id, 'does not have any households')
+        #     logger.record_issue('PUMA with name:', puma.name, 'does not have any households')
         logger.log('Checking that PUMA', i, 'in', year_key, 'has people and cfs', erase=True)
 
-columns = ['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed', 'Bankruptcy']
+columns = ['Divorce', 'Age', 'Education', 'Insurance', 'Black', 'Disabled', 'Veteran', 'Immigrant', 'Unemployed', 'Bankruptcy', 'PUMA']
 # name of output file  
 filename = "./files/puma-output.csv"
 # writing to csv file  
@@ -194,13 +194,13 @@ with open(filename, 'w') as csvfile:
             puma = year_of_PUMAs[puma_key]
             
             bankruptcy_rate = puma.get_bankruptcy_rate()
-            row = [puma.get_divorced_rate(), puma.get_portion_35_to_54(), puma.get_portion_hs_or_some_college(), puma.get_insured_rate(), puma.get_black_rate(), puma.get_disabled_rate(), puma.get_veteran_rate(), puma.get_immigrant_rate(), puma.get_unemployed_rate(), bankruptcy_rate]
+            row = [puma.get_divorced_rate(), puma.get_portion_35_to_54(), puma.get_portion_hs_or_some_college(), puma.get_insured_rate(), puma.get_black_rate(), puma.get_disabled_rate(), puma.get_veteran_rate(), puma.get_immigrant_rate(), puma.get_unemployed_rate(), bankruptcy_rate, puma.name]
             if bankruptcy_rate != 'NA':
                 csvwriter.writerow(row)
                 if bankruptcy_rate > 0.01:
-                    logger.record_issue('Bankruptcy rate is', bankruptcy_rate, 'for puma', puma_key)
+                    logger.record_issue('Bankruptcy rate is', bankruptcy_rate, 'for puma', puma.name)
             else:
-                logger.record_issue('Bankruptcy is NA for puma with id:', puma_key)
+                logger.record_issue('Bankruptcy is NA for puma with name:', puma.name)
         
 logger.log('# of issues:', logger.get_num_issues())
 logger.log("COMPLETE")
