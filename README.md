@@ -83,6 +83,7 @@ Predicted b per year if all Americans had health insurance: 773,816 ( 33,212 les
 * ACS person data:
     * Create a folder called 'Person_ACS' in the files/ folder
     * Get single year ACS Person Files from this [census website](https://www.census.gov/programs-surveys/acs/data/pums.html).
+        * Click "Accessing PUMS Data", select a year, click the 1-Year PUMS link under "Access on FTP site", download csv_pus.zip
     * Rename those files to start with the year they are from (e.g. 2018_pus-a.csv)
     * Place ACS person files in the Person_ACS folder
     * (2012 and on uses the same census data for population)
@@ -91,8 +92,8 @@ Predicted b per year if all Americans had health insurance: 773,816 ( 33,212 les
     * Get bankruptcy data by county from this [US Courts site](https://www.uscourts.gov/report-name/bankruptcy-filings?tn=&pt=All&t=534&m%5Bvalue%5D%5Bmonth%5D=&y%5Bvalue%5D%5Byear%5D=2018) for each year that you want
         * Select bankruptcy from the topic drop-down menu and the year that you want
         * Look for the link for "U.S. Bankruptcy Courts - Business and Nonbusiness Cases Filed, by Chapter of the Bankruptcy Code, District, and County”
-        * The PDF will give you a pretty view, but you need the csv file
-        * Click on the link then download the CSV (sometimes the this needs done a couple times before a non corrupted version is downloaded?)
+        * The PDF will give you a pretty view, but you need the ~~csv~~ xlsx file
+        * Click on the link then download the ~~CSV~~ xlsx (sometimes the this needs done a couple times before a non corrupted version is downloaded?) (if it doesn't work, try switching browsers)
         * Edit the CSV in the following way:
             * Copy the Circ/Dist and County column to column A
             * Copy the county code column into column B
